@@ -4,11 +4,16 @@ networks:
   net:
     driver: overlay
     attachable: true
+  traefik:
+    external: true
+  proxy: 
+    external: true
 
 volumes:
-    prometheus: {}
-    grafana: {}
-    alertmanager: {}
+    prometheus:
+    monitor_grafana:
+      external: true
+    alertmanager:
 
 configs:
   caddy_config:
@@ -61,6 +66,10 @@ services:
     image: stefanprodan/swarmprom-grafana:5.3.4
     networks:
       - net
+      - proxy
+      - traefik
+     ports:
+      - 3000:3000
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -73,13 +82,19 @@ services:
       #- GF_SMTP_USER=${GF_SMTP_USER}
       #- GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
     volumes:
-      - grafana:/var/lib/grafana
+      - monitor_grafana:/var/lib/grafana
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints:
           - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=proxy"
+        - "traefik.port=3000"
+        - "traefik.backend=metrics"
+        - "traefik.frontend.rule=Host:metrics.cbean.duckdns.org"          
       resources:
         limits:
           memory: 128M
