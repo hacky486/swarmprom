@@ -90,17 +90,11 @@ services:
         reservations:
           memory: 64M
       labels:
-        - traefik.frontend.rule=Host:metrics.${DOMAIN}
-        - traefik.enable=true
-        - traefik.port=3000
+        - "traefik.enable=true"
+        - "traefik.port=3000"
+        - "traefik.docker.network=proxy"
         - "traefik.backend=metrics"
-#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
-        - traefik.docker.network=proxy
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+        - "traefik.frontend.rule=Host:metrics.yankeewhite.duckdns.org"        
     networks:
       - default
       - net
@@ -134,18 +128,12 @@ services:
         reservations:
           memory: 64M
       labels:
-        - traefik.frontend.rule=Host:alertmanager.${DOMAIN}
-        - traefik.enable=true
-        - traefik.port=9093
-        - "traefik.backend=alertmanager"        
-#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
-        - traefik.docker.network=proxy
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
+        - "traefik.enable=true"
+        - "traefik.port=9093"
+        - "traefik.docker.network=proxy"
+        - "traefik.backend=alertmanager"
+        - "traefik.frontend.rule=Host:alertmanager.yankeewhite.duckdns.org"  
+        - "traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}"      
     networks:
       - default
       - net
@@ -164,18 +152,12 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        - traefik.frontend.rule=Host:unsee.${DOMAIN}
-        - traefik.enable=true
-        - traefik.port=8080
-        - "traefik.backend=unsee"        
-#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
-        - traefik.docker.network=proxy
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
+        - "traefik.enable=true"
+        - "traefik.port=8080"
+        - "traefik.docker.network=proxy"
+        - "traefik.backend=unsee"
+        - "traefik.frontend.rule=Host:unsee.yankeewhite.duckdns.org"  
+        - "traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}"        
     networks:
       - default
       - net
@@ -236,18 +218,12 @@ services:
         reservations:
           memory: 128M
       labels:
-        - traefik.frontend.rule=Host:prometheus.${DOMAIN}
-        - traefik.enable=true
-        - traefik.port=9090
-        - "traefik.backend=prometheus"        
-#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
-        - traefik.docker.network=proxy
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
+        - "traefik.enable=true"
+        - "traefik.port=9090"
+        - "traefik.docker.network=proxy"
+        - "traefik.backend=prometheus"
+        - "traefik.frontend.rule=Host:prometheus.yankeewhite.duckdns.org"  
+        - "traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}"        
     networks:
       - default
       - net
