@@ -63,6 +63,8 @@ services:
     image: stefanprodan/swarmprom-grafana:5.3.4
     networks:
       - net
+      - proxy
+      - traefik
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -91,13 +93,13 @@ services:
         - traefik.frontend.rule=Host:grafana.${DOMAIN}
         - traefik.enable=true
         - traefik.port=3000
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
+#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+#        - traefik.redirectorservice.frontend.entryPoints=http
+#        - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+#        - traefik.webservice.frontend.entryPoints=https
     networks:
       - default
       - net
@@ -108,6 +110,8 @@ services:
     image: stefanprodan/swarmprom-alertmanager:v0.14.0
     networks:
       - net
+      - proxy
+      - traefik
     environment:
       - SLACK_URL=${SLACK_URL:-https://hooks.slack.com/services/TOKEN}
       - SLACK_CHANNEL=${SLACK_CHANNEL:-general}
@@ -132,13 +136,13 @@ services:
         - traefik.frontend.rule=Host:alertmanager.${DOMAIN}
         - traefik.enable=true
         - traefik.port=9093
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
+#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+#        - traefik.redirectorservice.frontend.entryPoints=http
+#        - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+#        - traefik.webservice.frontend.entryPoints=https
         - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
@@ -150,6 +154,8 @@ services:
     image: cloudflare/unsee:v0.8.0
     networks:
       - net
+      - proxy
+      - traefik
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
     deploy:
@@ -159,13 +165,13 @@ services:
         - traefik.frontend.rule=Host:unsee.${DOMAIN}
         - traefik.enable=true
         - traefik.port=8080
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
+#        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+#        - traefik.redirectorservice.frontend.entryPoints=http
+#        - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+#        - traefik.webservice.frontend.entryPoints=https
         - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
@@ -202,6 +208,8 @@ services:
     image: stefanprodan/swarmprom-prometheus:v2.5.0
     networks:
       - net
+      - proxy
+      - traefik
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -228,13 +236,13 @@ services:
         - traefik.frontend.rule=Host:prometheus.${DOMAIN}
         - traefik.enable=true
         - traefik.port=9090
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
+@        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+@        - traefik.redirectorservice.frontend.entryPoints=http
+@        - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+@        - traefik.webservice.frontend.entryPoints=https
         - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
