@@ -4,7 +4,9 @@ networks:
   net:
     driver: overlay
     attachable: true
-  traefik-public:
+  traefik:
+    external: true
+  proxy:
     external: true
 
 volumes:
@@ -73,7 +75,7 @@ services:
       #- GF_SMTP_USER=${GF_SMTP_USER}
       #- GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
     volumes:
-      - grafana:/var/lib/grafana
+      - /home/cbean/fs01/volumes/monitor/grafana:/var/lib/grafana
     deploy:
       mode: replicated
       replicas: 1
@@ -90,7 +92,7 @@ services:
         - traefik.enable=true
         - traefik.port=3000
         - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
+        - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
@@ -99,7 +101,8 @@ services:
     networks:
       - default
       - net
-      - traefik-public
+      - traefik
+      - proxy
 
   alertmanager:
     image: stefanprodan/swarmprom-alertmanager:v0.14.0
@@ -113,7 +116,7 @@ services:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/alertmanager'
     volumes:
-      - alertmanager:/alertmanager
+      - /home/cbean/fs01/volumes/monitor/alertmanager:/alertmanager
     deploy:
       mode: replicated
       replicas: 1
@@ -130,17 +133,18 @@ services:
         - traefik.enable=true
         - traefik.port=9093
         - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
+        - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
       - net
-      - traefik-public
+      - traefik
+      - proxy
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -156,17 +160,18 @@ services:
         - traefik.enable=true
         - traefik.port=8080
         - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
+        - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
       - net
-      - traefik-public
+      - traefik
+      - proxy
 
   node-exporter:
     image: stefanprodan/swarmprom-node-exporter:v0.16.0
@@ -202,7 +207,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention=24h'
     volumes:
-      - prometheus:/prometheus
+      - /home/cbean/fs01/volumes/monitor/prometheus:/prometheus
     configs:
       - source: node_rules
         target: /etc/prometheus/swarm_node.rules.yml
@@ -224,14 +229,15 @@ services:
         - traefik.enable=true
         - traefik.port=9090
         - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
+        - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${ADMIN_PASSWORD}
     networks:
       - default
       - net
-      - traefik-public
+      - traefik
+      - proxy
