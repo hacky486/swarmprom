@@ -90,7 +90,7 @@ services:
         reservations:
           memory: 64M
       labels:
-        - traefik.frontend.rule=Host:grafana.${DOMAIN}
+        - traefik.frontend.rule=Host:metrics.${DOMAIN}
         - traefik.enable=true
         - traefik.port=3000
 #        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
