@@ -91,7 +91,7 @@ services:
         - traefik.frontend.rule=Host:grafana.${DOMAIN}
         - traefik.enable=true
         - traefik.port=3000
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
@@ -132,7 +132,7 @@ services:
         - traefik.frontend.rule=Host:alertmanager.${DOMAIN}
         - traefik.enable=true
         - traefik.port=9093
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
@@ -159,7 +159,7 @@ services:
         - traefik.frontend.rule=Host:unsee.${DOMAIN}
         - traefik.enable=true
         - traefik.port=8080
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
@@ -228,7 +228,7 @@ services:
         - traefik.frontend.rule=Host:prometheus.${DOMAIN}
         - traefik.enable=true
         - traefik.port=9090
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-proxy}
         - traefik.docker.network=proxy
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
