@@ -84,6 +84,7 @@ services:
       placement:
         constraints:
           - node.role == manager
+          - node.hostname != geo
       resources:
         limits:
           memory: 128M
@@ -212,6 +213,7 @@ services:
       placement:
         constraints:
           - node.role == manager
+          - node.hostname != geo
       resources:
         limits:
           memory: 2048M
